@@ -7,7 +7,9 @@
 		this.cooldown = 1.25;
 		this.isUnique = true;
 		this.cast = function(player) {};
-		this.canCast = function(player) {};
+		this.canCast = function(player) { return true };
+		this.step = function(player) {};
+		this.plannedDamage = function(player) {};
 
 	}
 
@@ -42,14 +44,18 @@
 
 
 		var activeSpells = [];
-		this.step = function(){
+		this.step = function(time){
 			for (var i = 0; i < activeSpells.length; i++) {
 				activeSpells[i].step(this);
 			};
+			if(this.time >= this.GCDtime) {
+				this.castNext();
+			}
+			this.time += time;
 		}
 
 		this.cast = function(spell) {
-			console.log("Casting " + spell.name + ".");
+			console.log("Casting " + spell.name + " at time " + this.time + ".");
 			activeSpells.push(spell);
 			spell.cast(this);
 		}
@@ -63,6 +69,36 @@
 					console.log(spell.name + " has finished.");
 				}
 			};
+		}
+
+		this.castNext = function() {
+			console.dir(this.LAS);
+
+			var castableSpells = this.LAS.filter(function(el, index, arr) {
+				return el.canCast(this);
+			}, this);
+
+			var optimal = optimalSpell(castableSpells);
+
+			if(optimal) this.cast(optimal);	
+
+			
+		}
+
+		var optimalSpell = function(castableSpells) {
+
+			var optimal = castableSpells[0];
+			for (var i = 1; i < castableSpells.length; i++) {
+				if(castableSpells[i].totalDamage > optimal.totalDamage) {
+					optimal = castableSpells[i];
+				}
+			};
+			return optimal;
+
+		}
+
+		this.printDamage = function() {
+			console.log("Dealt " + totalDamage + " in " + this.time + " seconds. (" + totalDamage / this.time + " dps)");
 		}
 	}
 
