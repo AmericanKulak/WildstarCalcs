@@ -63,13 +63,13 @@ var lib = require("./Spells")
 
 	}
 
-	Discharge.prototype = new Spell();
+	Discharge.prototype = new Spell(); 
 
 
 	var Go = function() {
 		var me = new Medic();
 		me.abilityPower = 1917;
-		me.LAS.push(new Discharge(0));
+		me.LAS.push(new Discharge(0 ));
 		for (var i = 0; i < 5 / stepTime; i++) {
 			me.step(stepTime);
 		};
