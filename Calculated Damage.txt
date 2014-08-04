@@ -1,0 +1,8 @@
+Discharge
+213 + 0.0982AP per tick
++ 0.021AP per Tier
++ 0.252AP for Tier 4
+
+Gamma Rays
+710 + 0.3262AP per Beam
++ 0.0212AP per beam per Tier
