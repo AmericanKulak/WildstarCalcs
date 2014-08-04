@@ -25,56 +25,48 @@ var lib = require("./Spells")
 	Medic.prototype = new Player();
 
 	var Discharge = function(tier) {
-
 		var $this = this;
-
 		this.name = "Discharge";
 		this.tier = tier;
 
 		this.cast = function(medic) {
-
 			var startTime = medic.time;
 			medic.GCDtime = startTime + 1.25;
-
-			$this.step = function() {
+			this.step = function() {
 				var timeFrame = medic.time - startTime;
 				if(timeFrame - stepTime < 0.41 && 0.41 <= timeFrame)
 				{
-					tick();
+					this.tick();
 				} else if (timeFrame - stepTime < 0.82 && 0.82 <= timeFrame) {
-					tick();
+					this.tick();
 				} else if (timeFrame - stepTime < 1.25 && 1.25 <= timeFrame) {
-					tick();
-					medic.addActuator();
+					this.tick();
+					//medic.addActuator();
 					medic.finishCast(this);
 				}
 			}
 
-			var tick = function() {
-				var baseTickDamage = 213 + ((0.0327 + ($this.tier * 0.0070)) * medic.abilityPower);
+			this.tick = function() {
+				var baseTickDamage = 213 + ((0.982 + (this.tier * 0.021)) * medic.abilityPower);
 
-				medic.damageDealt($this.name, medic.modifyDamage(baseTickDamage));
+				medic.damageDealt(this.name, medic.modifyDamage(baseTickDamage));
 			}
-		}
-
-		this.canCast = function(medic) {
-			return true;
 		}
 
 	}
 
 	Discharge.prototype = new Spell();
 
+	
 
 	var Go = function() {
 		var me = new Medic();
-		me.abilityPower = 1917;
-		me.LAS.push(new Discharge(0));
+		var discharge = new Discharge(0);
+		me.LAS.push(discharge);
 		for (var i = 0; i < 5 / stepTime; i++) {
-			me.step(stepTime);
+			me.time += stepTime;
+			me.step();
 		};
-
-		me.printDamage();
 	}
 
 	Go();
